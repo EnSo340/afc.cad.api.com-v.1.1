@@ -1,0 +1,17 @@
+Index: src/main/java/cad/afc/cad/api/aluno/Aluno.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/cad/afc/cad/api/aluno/Aluno.java b/src/main/java/cad/afc/cad/api/aluno/Aluno.java
+--- a/src/main/java/cad/afc/cad/api/aluno/Aluno.java
++++ b/src/main/java/cad/afc/cad/api/aluno/Aluno.java	(date 1756082345179)
+@@ -26,7 +26,7 @@
+     String email;
+     String telefone;
+     String cpf;
+-    int totalFaltas; // Adicionado para persistir o total de faltas
++    int totalFaltas; 
+ 
+     @Embedded
+     private Endereco endereco;

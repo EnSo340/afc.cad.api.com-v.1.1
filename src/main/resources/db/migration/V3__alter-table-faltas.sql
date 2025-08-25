@@ -1,0 +1,1 @@
+ALTER TABLE faltas MODIFY aluno_id BIGINT;
