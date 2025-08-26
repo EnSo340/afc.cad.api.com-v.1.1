@@ -1,15 +1,14 @@
 package cad.afc.cad.api.controller;
 
 import cad.afc.cad.api.aluno.*;
+import cad.afc.cad.api.aluno.DadosAtualizacaoAluno;
+import cad.afc.cad.api.aluno.DadosCadastroAluno;
+import cad.afc.cad.api.aluno.DadosListagemAluno;
 import cad.afc.cad.api.faltas.TotalFaltasDTO;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import cad.afc.cad.api.aluno.DadosCadastroAluno;
-import cad.afc.cad.api.aluno.DadosListagemAluno;
-import cad.afc.cad.api.aluno.Aluno;
 
 import java.util.List;
 
@@ -20,7 +19,11 @@ public class AlunoController {
     @Autowired
     private AlunoRepository repository;
 
+    @Autowired
+    private AlunoService alunoService;
+
     @PostMapping
+    @Transactional
     public void cadastrarAluno(@RequestBody @Valid DadosCadastroAluno dadosAluno) {
         Aluno aluno = new Aluno(dadosAluno);
         repository.save(aluno);
@@ -42,17 +45,24 @@ public class AlunoController {
     }
 
     @DeleteMapping("/{id}")
+    @Transactional
     public void excluirAluno(@PathVariable Long id) {
         repository.deleteById(id);
     }
 
 
-    // No AlunoController.java
     @GetMapping("/{id}/faltas")
-    public ResponseEntity<TotalFaltasDTO> getTotalFaltas(@PathVariable Long id) {
+    public TotalFaltasDTO getTotalFaltas(@PathVariable Long id) {
         Aluno aluno = repository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Aluno não encontrado com o ID: " + id));
 
-        return ResponseEntity.ok(new TotalFaltasDTO(aluno.getTotalFaltas()));
+        return new TotalFaltasDTO(aluno.getTotalFaltas());
     }
+
+    @GetMapping("/{id}/aprovacao")
+    public SituacaoAlunoDTO verificarAprovacao(@PathVariable Long id) {
+        return alunoService.verificarAprovacao(id);
+    }
+
+
 }

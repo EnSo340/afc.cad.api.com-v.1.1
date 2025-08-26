@@ -3,9 +3,10 @@ package cad.afc.cad.api.controller;
 import cad.afc.cad.api.aluno.Aluno;
 import cad.afc.cad.api.aluno.AlunoRepository;
 import cad.afc.cad.api.faltas.DadosCadastroFalta;
-import cad.afc.cad.api.faltas.DadosListagemFaltas;
-import cad.afc.cad.api.faltas.Faltas;
-import cad.afc.cad.api.faltas.FaltasRepository;
+import cad.afc.cad.api.faltas.DadosListagemFalta;
+import cad.afc.cad.api.faltas.DadosListagemFalta;
+import cad.afc.cad.api.faltas.Falta;
+import cad.afc.cad.api.faltas.FaltaRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +14,10 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/faltas")
-public class FaltasController {
+public class FaltaController {
 
     @Autowired
-    private FaltasRepository repository;
+    private FaltaRepository repository;
 
     @Autowired
     private AlunoRepository alunoRepository;
@@ -31,15 +32,15 @@ public class FaltasController {
         aluno.adicionarFalta(dados.quantidade());
 
 
-        Faltas falta = new Faltas(null, dados.data(), dados.quantidade(), aluno);
+        Falta falta = new Falta(null, dados.data(), dados.quantidade(), aluno);
         repository.save(falta);
     }
 
     @GetMapping
-    public java.util.List<DadosListagemFaltas> listar() {
+    public java.util.List<DadosListagemFalta> listar() {
         return repository.findAll()
                 .stream()
-                .map(DadosListagemFaltas::new)
+                .map(DadosListagemFalta::new)
                 .toList();
     }
 }

@@ -1,7 +1,10 @@
 package cad.afc.cad.api.aluno;
 
+import cad.afc.cad.api.boletins.Boletim;
+import cad.afc.cad.api.boletins.TipoDeEnsino;
 import cad.afc.cad.api.endereco.Endereco;
-import cad.afc.cad.api.faltas.Faltas;
+import cad.afc.cad.api.faltas.Falta;
+import cad.afc.cad.api.notas.Nota;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -31,9 +34,14 @@ public class Aluno {
     @Embedded
     private Endereco endereco;
 
-    @OneToMany(mappedBy = "aluno")
-    private List<Faltas> faltas = new ArrayList<>();
+    @Enumerated(EnumType.STRING)
+    private TipoDeEnsino.TipoAvaliacao tipoEnsino;
 
+    @OneToMany(mappedBy = "aluno")
+    private List<Falta> faltas = new ArrayList<>();
+
+    @OneToMany(mappedBy = "aluno")
+    private List<Nota> notas = new ArrayList<>();
 
     public Aluno(DadosCadastroAluno dadosAluno){
         this.nome = dadosAluno.nome();
@@ -67,8 +75,14 @@ public class Aluno {
     }
 
 
-    public boolean ReprovadoPorFaltas(int totalAulas) {
-        int maxFaltas = (int) (totalAulas * 0.25); // 25%
+    public boolean SistemaDeReprovacaoPorFaltas(int totalAulas) {
+        int maxFaltas = (int) (totalAulas * 0.25);
         return getTotalFaltas() > maxFaltas;
     }
+    public boolean SistemaDeAprovacaoPorPresenca(int totalAulas) {
+        int maxFaltas = (int) (totalAulas * 0.25);
+        return getTotalFaltas() <= maxFaltas;
+    }
+
 }
+

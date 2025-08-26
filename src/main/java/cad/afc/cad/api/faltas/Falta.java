@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Faltas {
+public class Falta {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,7 +29,7 @@ public class Faltas {
     private Materia materia;
 
 
-    public Faltas(Long id, LocalDate data, int quantidade, Aluno aluno, Materia materia) {
+    public Falta(Long id, LocalDate data, int quantidade, Aluno aluno, Materia materia) {
         this.id = id;
         this.data = data;
         this.quantidade = quantidade;
@@ -37,6 +37,6 @@ public class Faltas {
         this.materia = materia;
     }
 
-    public Faltas(Object o, LocalDate data, int quantidade, Aluno aluno) {
+    public Falta(Object o, LocalDate data, int quantidade, Aluno aluno) {
     }
 }

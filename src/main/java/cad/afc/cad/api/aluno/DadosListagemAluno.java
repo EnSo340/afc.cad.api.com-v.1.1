@@ -1,7 +1,5 @@
 package cad.afc.cad.api.aluno;
 
-import cad.afc.cad.api.aluno.Aluno;
-import cad.afc.cad.api.endereco.DadosEndereco;
 public record DadosListagemAluno(
         Long id,
         String nome,
