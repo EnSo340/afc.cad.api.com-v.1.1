@@ -1,13 +1,11 @@
 package cad.afc.cad.api.aluno;
 
-import cad.afc.cad.api.boletins.Boletim;
-import cad.afc.cad.api.boletins.BoletimDTO;
-import cad.afc.cad.api.boletins.BoletimRepository;
+
 import cad.afc.cad.api.faltas.FaltaRepository;
+import cad.afc.cad.api.notas.Nota;
 import cad.afc.cad.api.notas.NotaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,27 +16,20 @@ public class AlunoService {
     @Autowired
     private NotaRepository notaRepository;
 
-    @Autowired
-    private BoletimRepository boletimRepository;
 
     @Autowired
     private FaltaRepository faltaRepository;
 
     @Autowired
     private AlunoRepository alunoRepository;
-    public SituacaoAlunoDTO verificarAprovacao(Long alunoId) {
 
+    public SituacaoAlunoDTO verificarAprovacao(Long alunoId) {
         Aluno aluno = alunoRepository.findById(alunoId)
                 .orElseThrow(() -> new IllegalArgumentException("Aluno não encontrado com o ID: " + alunoId));
 
+        List<Nota> notasDoAluno = notaRepository.findByAlunoId(alunoId);
 
-        List<Boletim> boletinsDoAluno = boletimRepository.findByAlunoId(alunoId);
-        List<BoletimDTO> boletinsDTO = boletinsDoAluno.stream()
-                .map(BoletimDTO::new)
-                .collect(Collectors.toList());
-
-        double mediaFinal = calcularMediaFinal(boletinsDoAluno);
-
+        double mediaFinal = calcularMediaFinal(notasDoAluno);
 
         long totalFaltas = faltaRepository.countByAlunoId(alunoId);
 
@@ -48,36 +39,33 @@ public class AlunoService {
         boolean aprovado = true;
         String motivoReprovacao = "";
 
-
         if (mediaFinal < MEDIA_MINIMA) {
             aprovado = false;
             motivoReprovacao += "Reprovado por nota. ";
         }
 
-
         if (totalFaltas > LIMITE_FALTAS) {
             aprovado = false;
             motivoReprovacao += "Reprovado por faltas.";
+
         }
 
-
         return new SituacaoAlunoDTO(
-                aluno.getId(),
-                aluno.getNome(),
-                aprovado,
-                mediaFinal,
+                aluno, // Pass the entire 'aluno' object as the first parameter
                 (int) totalFaltas,
+                mediaFinal,
+                aprovado,
                 aprovado ? "Aprovado" : motivoReprovacao.trim(),
-                boletinsDTO
+                notasDoAluno
         );
     }
 
-    private double calcularMediaFinal(List<Boletim> boletins) {
-        if (boletins.isEmpty()) {
+    private double calcularMediaFinal(List<Nota> notas) {
+        if (notas.isEmpty()) {
             return 0.0;
         }
-        return boletins.stream()
-                .mapToDouble(Boletim::getMedia)
+        return notas.stream()
+                .mapToDouble(Nota::getMedia)
                 .average()
                 .orElse(0.0);
     }

@@ -1,6 +1,7 @@
 package cad.afc.cad.api.notas;
 
 import cad.afc.cad.api.aluno.Aluno;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -30,6 +31,8 @@ public class Nota {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "aluno_id", nullable = false)
+    @JsonIgnore
+
     private Aluno aluno;
 
 
@@ -40,16 +43,15 @@ public class Nota {
         this.aluno = aluno;
         this.calcularMedia();
     }
-
-    public void calcularMedia() {
-        double p1Peso = (p1 != null ? p1 : 0) * 0.3;
-        double p2Peso = (p2 != null ? p2 : 0) * 0.4;
-        double atvPeso = (atv != null ? atv : 0) * 0.3;
-        this.mediaFinal = p1Peso + p2Peso + atvPeso;
+    @PrePersist
+    @PreUpdate
+    private void calcularMedia() {
+        if (this.p1 != null && this.p2 != null && this.atv != null) {
+            this.mediaFinal = (p1 + p2 + atv) / 3;
+        }
     }
 
-    public boolean aprovadoPorNota() {
-
-        return mediaFinal >= 6.0;
+    public Double getMedia() {
+        return (p1 + p2 + atv) / 3;
     }
 }

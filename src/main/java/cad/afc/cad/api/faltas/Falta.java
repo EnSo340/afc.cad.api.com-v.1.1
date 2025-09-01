@@ -3,6 +3,7 @@ package cad.afc.cad.api.faltas;
 
 import cad.afc.cad.api.aluno.Aluno;
 import cad.afc.cad.api.materia.Materia;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,9 +24,11 @@ public class Falta {
     private int quantidade;
 
     @ManyToOne
+    @JsonIgnore
     private Aluno aluno;
 
     @ManyToOne
+    @JsonIgnore
     private Materia materia;
 
 
