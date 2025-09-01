@@ -1,10 +1,10 @@
 package cad.afc.cad.api.aluno;
 
-import cad.afc.cad.api.boletins.Boletim;
-import cad.afc.cad.api.boletins.BoletimDTO;
-
 import java.util.List;
 import java.util.stream.Collectors;
+import cad.afc.cad.api.aluno.Aluno;
+import cad.afc.cad.api.notas.Nota;
+import cad.afc.cad.api.notas.DadosDetalhamentoNotas;
 
 public record SituacaoAlunoDTO(
         Long alunoId,
@@ -13,9 +13,9 @@ public record SituacaoAlunoDTO(
         Double mediaFinal,
         Integer faltasTotais,
         String motivoReprovacao,
-        List<BoletimDTO> boletins
+        List<DadosDetalhamentoNotas> notas
 ) {
-    public SituacaoAlunoDTO(Aluno aluno, List<Boletim> boletins, Integer faltasTotais, Double mediaFinal, boolean aprovado, String motivoReprovacao) {
+    public SituacaoAlunoDTO(Aluno aluno, Integer faltasTotais, Double mediaFinal, boolean aprovado, String motivoReprovacao, List<Nota> notasDoAluno) {
         this(
                 aluno.getId(),
                 aluno.getNome(),
@@ -23,8 +23,8 @@ public record SituacaoAlunoDTO(
                 mediaFinal,
                 faltasTotais,
                 motivoReprovacao,
-                boletins.stream()
-                        .map(BoletimDTO::new)
+                notasDoAluno.stream()
+                        .map(nota -> new DadosDetalhamentoNotas(nota, aprovado ? "Aprovado" : motivoReprovacao))
                         .collect(Collectors.toList())
         );
     }
